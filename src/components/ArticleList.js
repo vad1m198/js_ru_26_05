@@ -4,13 +4,15 @@ import Article from './Article'
 import Chart from './Chart'
 import oneOpen from '../decorators/oneOpen'
 import Select from 'react-select'
+import DayPicker, { DateUtils } from "react-day-picker";
 
 import 'react-select/dist/react-select.css'
 
 class ArticleList extends Component {
 
     state = {
-        selected: null
+        selected: [],
+        selectedDay: new Date(),
     }
 
     componentDidMount() {
@@ -20,8 +22,9 @@ class ArticleList extends Component {
 
     render() {
         const { articles, isOpen, openItem } = this.props
+        const articlesToShow = this.state.selected.length > 0 ? articles.filter((item) => this.state.selected.filter((selectedItem) => item.id == selectedItem.value).length > 0 ) : articles
 
-        const articleItems = articles.map((article) => <li key={article.id}>
+        const articleItems = articlesToShow.map((article) => <li key={article.id}>
             <Article article = {article}
                      isOpen = {isOpen(article.id)}
                 openArticle = {openItem(article.id)}
@@ -45,6 +48,9 @@ class ArticleList extends Component {
                     value= {this.state.selected}
                     multi = {true}
                 />
+                <DayPicker
+                    
+                />
             </div>
         )
     }
@@ -54,11 +60,14 @@ class ArticleList extends Component {
             selected
         })
     }
+
+    sunday = (day) => {
+      return day.getDay() === 0;
+    }
 }
 
 ArticleList.propTypes = {
     articles: PropTypes.array.isRequired,
-
     isOpen: PropTypes.func.isRequired,
     openItem: PropTypes.func.isRequired
 }
