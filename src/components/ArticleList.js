@@ -5,14 +5,17 @@ import Chart from './Chart'
 import oneOpen from '../decorators/oneOpen'
 import Select from 'react-select'
 import DayPicker, { DateUtils } from "react-day-picker";
+import moment from 'moment';
 
 import 'react-select/dist/react-select.css'
+import 'react-day-picker/lib/style.css'
 
 class ArticleList extends Component {
 
     state = {
         selected: [],
-        selectedDay: new Date(),
+        from: null,
+        to: null,
     }
 
     componentDidMount() {
@@ -21,8 +24,15 @@ class ArticleList extends Component {
     }
 
     render() {
+        const { from, to } = this.state;
+        console.log('from to', from, to)
         const { articles, isOpen, openItem } = this.props
-        const articlesToShow = this.state.selected.length > 0 ? articles.filter((item) => this.state.selected.filter((selectedItem) => item.id == selectedItem.value).length > 0 ) : articles
+        let articlesToShow = this.state.selected.length > 0 ? articles.filter((item) => this.state.selected.filter((selectedItem) => item.id == selectedItem.value).length > 0 ) : articles
+        
+        articlesToShow = articlesToShow.filter((article)=> {
+            if(!from || !to) return true         
+            return moment(article.createdDate) >= moment(from) && moment(article.createdDate) <= moment(to) 
+        })
 
         const articleItems = articlesToShow.map((article) => <li key={article.id}>
             <Article article = {article}
@@ -48,9 +58,22 @@ class ArticleList extends Component {
                     value= {this.state.selected}
                     multi = {true}
                 />
+                <div className="RangeExample">
+                    {!from && !to && <p>Please select the <strong>first day</strong>.</p>}
+                    {from && !to && <p>Please select the <strong>last day</strong>.</p>}
+                    {from && to &&
+                      <p>
+                        You chose from {moment(from).format('L')} to {moment(to).format('L')}.
+                        {' '}<a href="#" onClick={this.handleResetClick}>Reset</a>
+                      </p>
+                    }
                 <DayPicker
-                    
+                    style={{ width: '600px' }}
+                    numberOfMonths={2}
+                    selectedDays={day => DateUtils.isDayInRange(day, { from, to })}
+                    onDayClick={this.handleDayClick}
                 />
+              </div>
             </div>
         )
     }
@@ -61,8 +84,17 @@ class ArticleList extends Component {
         })
     }
 
-    sunday = (day) => {
-      return day.getDay() === 0;
+    handleDayClick = (e, day) => {
+       const range = DateUtils.addDayToRange(day, this.state);
+       this.setState(range);
+    }
+
+    handleResetClick = (e) => {
+        e.preventDefault();
+        this.setState({
+          from: null,
+          to: null,
+        });
     }
 }
 
