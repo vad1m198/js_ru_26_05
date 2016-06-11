@@ -4,18 +4,29 @@ import Article from './Article'
 import Chart from './Chart'
 import oneOpen from '../decorators/oneOpen'
 import Select from 'react-select'
+<<<<<<< HEAD
 import DayPicker, { DateUtils } from "react-day-picker";
 import moment from 'moment';
 
 import 'react-select/dist/react-select.css'
 import 'react-day-picker/lib/style.css'
+=======
+import DayPicker, { DateUtils } from 'react-day-picker'
+
+import 'react-day-picker/lib/style.css'
+import 'react-select/dist/react-select.css'
+>>>>>>> 4b04d0cc711add22646974a8f916e494129550bb
 
 class ArticleList extends Component {
 
     state = {
         selected: [],
         from: null,
+<<<<<<< HEAD
         to: null,
+=======
+        to: null
+>>>>>>> 4b04d0cc711add22646974a8f916e494129550bb
     }
 
     componentDidMount() {
@@ -24,6 +35,7 @@ class ArticleList extends Component {
     }
 
     render() {
+<<<<<<< HEAD
         const { from, to } = this.state;
         console.log('from to', from, to)
         const { articles, isOpen, openItem } = this.props
@@ -35,6 +47,12 @@ class ArticleList extends Component {
         })
 
         const articleItems = articlesToShow.map((article) => <li key={article.id}>
+=======
+        const { articles, isOpen, openItem } = this.props
+        const { from, to } = this.state
+
+        const articleItems = this.getFilteredArticles().map((article) => <li key={article.id}>
+>>>>>>> 4b04d0cc711add22646974a8f916e494129550bb
             <Article article = {article}
                      isOpen = {isOpen(article.id)}
                 openArticle = {openItem(article.id)}
@@ -52,12 +70,21 @@ class ArticleList extends Component {
                     {articleItems}
                 </ul>
                 <Chart ref="chart" />
+<<<<<<< HEAD
+=======
+                <DayPicker
+                    ref="daypicker"
+                    selectedDays={day => DateUtils.isDayInRange(day, {from, to})}
+                    onDayClick={this.setDateRange.bind(this)}
+                />
+>>>>>>> 4b04d0cc711add22646974a8f916e494129550bb
                 <Select
                     options = {options}
                     onChange = {this.handleChange}
                     value= {this.state.selected}
                     multi = {true}
                 />
+<<<<<<< HEAD
                 <div className="RangeExample">
                     {!from && !to && <p>Please select the <strong>first day</strong>.</p>}
                     {from && !to && <p>Please select the <strong>last day</strong>.</p>}
@@ -74,10 +101,13 @@ class ArticleList extends Component {
                     onDayClick={this.handleDayClick}
                 />
               </div>
+=======
+>>>>>>> 4b04d0cc711add22646974a8f916e494129550bb
             </div>
         )
     }
 
+<<<<<<< HEAD
     handleChange = (selected) => {
         this.setState({
             selected
@@ -96,12 +126,40 @@ class ArticleList extends Component {
           to: null,
         });
     }
+=======
+    getFilteredArticles() {
+        const { articles } = this.props
+        const { from, to, selected } = this.state
+        return articles
+            .filter((article) => !selected.length || selected.includes(article.id))
+            .filter((article) => !(from || to) || DateUtils.isDayInRange(new Date(article.date), { from, to }))
+    }
+
+    setDateRange = (e, day) => {
+        const range = DateUtils.addDayToRange(day, this.state)
+        this.setState(range)
+    }
+
+    handleChange = (selected) => {
+        this.setState({
+            selected: selected.map(el => el.value)
+        })
+    }
+>>>>>>> 4b04d0cc711add22646974a8f916e494129550bb
 }
 
 ArticleList.propTypes = {
     articles: PropTypes.array.isRequired,
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4b04d0cc711add22646974a8f916e494129550bb
     isOpen: PropTypes.func.isRequired,
     openItem: PropTypes.func.isRequired
 }
 
+<<<<<<< HEAD
 export default oneOpen(ArticleList)
+=======
+export default oneOpen(ArticleList)
+>>>>>>> 4b04d0cc711add22646974a8f916e494129550bb
