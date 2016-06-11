@@ -36,16 +36,12 @@ class Article extends Component {
         )
     }
 
-<<<<<<< HEAD
-=======
     handleDeleteArticle = (ev) => {
         ev.preventDefault()
         ev.stopPropagation()
         deleteArticle(this.props.article.id)
     }
 }
-
->>>>>>> 4b04d0cc711add22646974a8f916e494129550bb
 Article.propTypes = {
     article: PropTypes.shape({
         title: PropTypes.string.isRequired,
