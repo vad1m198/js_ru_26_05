@@ -77,6 +77,7 @@ class ArticleList extends Component {
             selected: selected.map(el => el.value)
         })
     }
+}
 
 ArticleList.propTypes = {
     articles: PropTypes.array.isRequired,

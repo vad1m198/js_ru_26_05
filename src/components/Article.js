@@ -31,7 +31,7 @@ class Article extends Component {
         return (
             <section>
                 {article.text}
-                <CommentList comments = {article.getRelation('comments')} />
+                <CommentList comments = {article.getRelation('comments')} articleId={ article.id } />
             </section>
         )
     }

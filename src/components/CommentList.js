@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import Comment from './Comment'
 import toggleOpen from '../decorators/toggleOpen'
+import { addComment } from '../AC/articles'
 
 class CommentList extends Component {
     static defaultProps = {
@@ -18,6 +19,7 @@ class CommentList extends Component {
             <div>
                 {this.getToggler()}
                 {this.getList()}
+                
             </div>
         )
     }
@@ -37,12 +39,28 @@ class CommentList extends Component {
         return <a href = "#" onClick = {toggleOpen}>{text}</a>
     }
 
+    handleAddComment = (ev) => {
+        ev.preventDefault()
+        ev.stopPropagation()
+        const comment = this.refs.addCommentInput.value;
+        this.refs.addCommentInput.value = '';
+        const id = new Date().getTime();
+        addComment(comment, this.props.articleId, id);
+        
+       
+    }
+
     getList() {
         const { comments, isOpen } = this.props
         if (!isOpen) return null
-        if (!comments || !comments.length) return <h3>No comments yet</h3>
         const items = comments.map(comment => <li key = {comment.id}><Comment comment = {comment} /></li>)
-        return <ul>{items}</ul>
+        return <div>
+                {(!comments || !comments.length) && <h3>No comments yet</h3> }
+                { comments.length > 0 && <ul>{items}</ul> }
+                <input type="text" ref="addCommentInput"/>
+                <button onClick={this.handleAddComment}>Add</button>
+               </div>
+
     }
 }
 
