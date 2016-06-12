@@ -44,6 +44,7 @@ class CommentList extends Component {
         ev.stopPropagation()
         const comment = this.refs.addCommentInput.value;
         this.refs.addCommentInput.value = '';
+        //Хорошо, но лучше вынести генерацию id в AC. + я бы передавал сразу article в CommentList, а не отдельно comments и articleId
         const id = new Date().getTime();
         addComment(comment, this.props.articleId, id);
         
