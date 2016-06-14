@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import Comment from './Comment'
 import toggleOpen from '../decorators/toggleOpen'
-import { addComment } from '../AC/articles'
+import NewCommentForm from './NewCommentForm'
 
 class CommentList extends Component {
     static defaultProps = {
@@ -9,7 +9,7 @@ class CommentList extends Component {
     }
 
     static propTypes = {
-        comments: PropTypes.array,
+        article: PropTypes.object.isRequired,
         //from toggleOpen decorator
         isOpen: PropTypes.bool,
         toggleOpen: PropTypes.func
@@ -51,16 +51,15 @@ class CommentList extends Component {
     }
 
     getList() {
-        const { comments, isOpen } = this.props
+        const { article, isOpen } = this.props
         if (!isOpen) return null
+        const comments = article.getRelation('comments')
+        if (!comments || !comments.length) return <h3>No comments yet</h3>
         const items = comments.map(comment => <li key = {comment.id}><Comment comment = {comment} /></li>)
         return <div>
-                {(!comments || !comments.length) && <h3>No comments yet</h3> }
-                { comments.length > 0 && <ul>{items}</ul> }
-                <input type="text" ref="addCommentInput"/>
-                <button onClick={this.handleAddComment}>Add</button>
-               </div>
-
+            <ul>{items}</ul>
+            <NewCommentForm articleId={article.id} />
+        </div>
     }
 }
 

@@ -1,20 +1,29 @@
 import React, { Component, PropTypes } from 'react'
-import stores  from '../stores'
 import ArticleList from './ArticleList'
-import ConnectToStores from '../decorators/connectToStores'
+import connectToStore from '../decorators/connectToStore'
+import { loadAllArticles } from '../AC/articles'
 
 class AppContainer extends Component {
-    state = {
-        articles: stores.articles.getAll()
+
+    componentDidMount() {
+        loadAllArticles()
     }
 
     render() {
-        return <ArticleList articles = {this.state.articles} />
+        const { loading, articles } = this.props
+        if (loading) return <h1>Loading...</h1>
+        return <ArticleList articles = {articles} />
+    }
+}
+
+
+function getState(stores) {
+    const { articles } = stores
+    return {
+        articles: articles.getAll(),
+        loading: articles.loading
     }
 
 }
 
-
-export default ConnectToStores(ArticleList, stores, props => ({
-  articles: stores.articles.getAll()
-}));
+export default connectToStore(null, getState)(AppContainer)
