@@ -29,6 +29,9 @@ class CommentList extends Component {
         const tmp = article.getRelation('comments').filter((item) => item === undefined);
         //Почему если  if (isOpen && tmp.length > 0 && !article.commentsLoading) то получаем ошибку 
         //" Invariant Violation: Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch." ?
+        
+        //Например ArticleStore уже обновился и article.commentsLoading == false, а CommentStore нет, и tmp.length > 0 == false
+        //используйте _waitFor
         if (isOpen && tmp.length > 0 && !article.commentsLoading && this.props.isOpen == false) {
             loadArticleComments({id:article.id})
         }
