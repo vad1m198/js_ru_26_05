@@ -13,6 +13,8 @@ export default class CommentStore extends BasicStore {
                     break
 
                 case LOAD_ARTICLE_COMMENTS + START:
+                    //зачем сдесь это? если хотите указать что загружаете комменты к статье - то указывайте к какой статье,
+                    //а не "в принципе что-то загружаеться". Но в Вашем случае вы уже делаете это в ArticleStore - здесь лишнее
                     this.loading = true
                     break
 
