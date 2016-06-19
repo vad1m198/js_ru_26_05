@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import Comment from './Comment'
 import toggleOpen from '../decorators/toggleOpen'
 import NewCommentForm from './NewCommentForm'
-import { loadArticleComments } from '../AC/articles'
+//import { loadCommentsForArticle } from '../AC/comments'
+import { getRelation } from '../store/utils'
 
 class CommentList extends Component {
     static defaultProps = {
@@ -20,23 +21,25 @@ class CommentList extends Component {
             <div>
                 {this.getToggler()}
                 {this.getList()}
-                
             </div>
         )
     }
 
-    componentWillReceiveProps({ isOpen, article }) {
-        const tmp = article.getRelation('comments').filter((item) => item === undefined);
-        //Почему если  if (isOpen && tmp.length > 0 && !article.commentsLoading) то получаем ошибку 
-        //" Invariant Violation: Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch." ?
-        
-        //Например ArticleStore уже обновился и article.commentsLoading == false, а CommentStore нет, и tmp.length > 0 == false
-        //используйте _waitFor
-        if (isOpen && tmp.length > 0 && !article.commentsLoading && this.props.isOpen == false) {
-            loadArticleComments({id:article.id})
-        }
+/*
+    componentDidMount() {
+        console.log('I am mounted')
     }
 
+    componentWillReceiveProps({ isOpen, article }) {
+        if (isOpen && getRelation(article, 'comments').includes(undefined) && !article.loadingComments) loadCommentsForArticle(article)
+    }
+
+    componentWillUpdate(nextProps) {
+        console.log(this.props.isOpen, ' changes to ', nextProps.isOpen)
+    }
+
+
+*/
 
     getToggler() {
         const { isOpen, toggleOpen } = this.props
@@ -44,23 +47,12 @@ class CommentList extends Component {
         return <a href = "#" onClick = {toggleOpen}>{text}</a>
     }
 
-    handleAddComment = (ev) => {
-        ev.preventDefault()
-        ev.stopPropagation()
-        const comment = this.refs.addCommentInput.value;
-        this.refs.addCommentInput.value = '';
-        const id = new Date().getTime();
-        addComment(comment, this.props.articleId, id);
-        
-       
-    }
-
     getList() {
         const { article, isOpen } = this.props
         if (!isOpen) return null
-        const comments = article.getRelation('comments')
-        if(article.commentsLoading || comments.filter((i)=> i===undefined).length > 0) return <h3>Loading...</h3>
+        const comments = getRelation(article, 'comments')
         if (!comments || !comments.length) return <h3>No comments yet</h3>
+        if (comments.includes(undefined)) return <h3>Loading comments...</h3>
         const items = comments.map(comment => <li key = {comment.id}><Comment comment = {comment} /></li>)
         return <div>
             <ul>{items}</ul>
