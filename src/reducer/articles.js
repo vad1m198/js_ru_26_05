@@ -9,6 +9,7 @@ export default (articles = normalizedArticles, action) => {
 
         case ADD_COMMENT:
         let arr  = articles.slice();
+        //нет, здесь что вы мутируете article
         arr.filter((article)=> article.id == payload.articleId)[0].comments.push(payload.comment.id);
         return arr;
     }
