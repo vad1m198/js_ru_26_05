@@ -1,13 +1,7 @@
 import { ADD_COMMENT } from '../constants'
-import AppDispatcher from '../dispatcher'
-
 export function addComment(articleId, comment) {
-    const id = Date.now()
-    AppDispatcher.dispatch({
+    return {
         type: ADD_COMMENT,
-        payload: {
-            articleId,
-            comment: {...comment, id}
-        }
-    })
+        payload: { articleId, comment: {id: new Date().getTime(), text:comment.text, user:comment.user} }
+    }
 }

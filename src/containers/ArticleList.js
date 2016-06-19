@@ -7,9 +7,12 @@ class ArticleListContainer extends Component {
 
     };
 
+
+
     render() {
+    	 
         return (
-            <ArticleList articles = {this.props.articles} />
+            <ArticleList articles = {this.props.articles}/>
         )
     }
 }
