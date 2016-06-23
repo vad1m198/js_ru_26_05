@@ -2,8 +2,10 @@ import React, { Component, PropTypes } from 'react'
 import Comment from './Comment'
 import toggleOpen from '../decorators/toggleOpen'
 import NewCommentForm from './NewCommentForm'
-//import { loadCommentsForArticle } from '../AC/comments'
+import { loadCommentsForArticle } from '../AC/comments'
 import { getRelation } from '../store/utils'
+import { connect } from 'react-redux'
+import { toArray } from '../store/utils'
 
 class CommentList extends Component {
     static defaultProps = {
@@ -25,13 +27,13 @@ class CommentList extends Component {
         )
     }
 
-/*
+
     componentDidMount() {
         console.log('I am mounted')
     }
 
     componentWillReceiveProps({ isOpen, article }) {
-        if (isOpen && getRelation(article, 'comments').includes(undefined) && !article.loadingComments) loadCommentsForArticle(article)
+        if (isOpen && getRelation(article, 'comments').includes(undefined) && !article.loadingComments) this.props.loadCommentsForArticle(article)
     }
 
     componentWillUpdate(nextProps) {
@@ -39,7 +41,7 @@ class CommentList extends Component {
     }
 
 
-*/
+
 
     getToggler() {
         const { isOpen, toggleOpen } = this.props
@@ -61,4 +63,10 @@ class CommentList extends Component {
     }
 }
 
-export default toggleOpen(CommentList)
+//export default toggleOpen(CommentList)
+
+export default connect(state => ({
+    //comments: toArray(state.comments.get('entities').toJS()),
+    //loading: state.articles.get('loading'),
+    //loaded: state.articles.get('loaded')
+}), { loadCommentsForArticle })(toggleOpen(CommentList))

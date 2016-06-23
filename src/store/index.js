@@ -2,8 +2,10 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import reducer from '../reducer'
 import { normalizedComments } from '../fixtures'
 import randomId from '../middlewares/randomId'
-import logger from '../middlewares/logger'
 import thunk from 'redux-thunk'
+import createLogger from 'redux-logger';
+
+const logger = createLogger();
 
 const enhancer = compose(
     applyMiddleware(thunk, randomId, logger),
