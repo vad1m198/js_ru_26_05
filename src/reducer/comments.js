@@ -16,6 +16,7 @@ export default (state = defaultState, action) => {
  			console.log(LOAD_COMMENTS_FOR_ARTICLE)
  			console.log(response)
             return state
+                //лучше мерджить в entities, а не перезаписывать каждый раз
                 .set('entities', fromJS(fromArray(response)) )
     }
 
