@@ -1,16 +1,8 @@
-import store from './index'
+export function getRelation(state, entity, relation) {
+    const relStore = state[relation]
+    if (!entity.get(relation) || !relStore) return []
 
-export function getRelation(entity, relation) {
-    const relStore = store.getState()[relation]
-    if (!relStore || !entity[relation]) return []    
-    return entity[relation].map(id => {
-    	const relation = relStore.getIn(['entities', id.toString()])
-    	if(relation) {
-    		return relStore.getIn(['entities', id.toString()]).toJS()
-    	} else {
-    		return relation
-    	}	
-    })
+    return entity.get(relation).map(id => relStore.getIn(['entities', id.toString()]))
 }
 
 

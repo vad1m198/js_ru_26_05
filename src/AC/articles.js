@@ -9,6 +9,14 @@ export function deleteArticle(id) {
 }
 
 export function loadAllArticles() {
+    return {
+        type: LOAD_ALL_ARTICLES,
+        callAPI: '/api/article'
+    }
+}
+
+/*
+export function loadAllArticles() {
     return (dispatch, getState) => {
         dispatch({
             type: LOAD_ALL_ARTICLES + START
@@ -23,6 +31,7 @@ export function loadAllArticles() {
         }, 1000)
     }
 }
+*/
 
 /*
 //optional HW

@@ -1,11 +1,10 @@
 import React, { Component, PropTypes } from 'react'
-import Comment from './Comment'
+import { connect } from 'react-redux'
+import Comment from './../components/Comment'
 import toggleOpen from '../decorators/toggleOpen'
-import NewCommentForm from './NewCommentForm'
+import NewCommentForm from './../components/NewCommentForm'
 import { loadCommentsForArticle } from '../AC/comments'
 import { getRelation } from '../store/utils'
-import { connect } from 'react-redux'
-import { toArray } from '../store/utils'
 
 class CommentList extends Component {
     static defaultProps = {
@@ -18,6 +17,11 @@ class CommentList extends Component {
         isOpen: PropTypes.bool,
         toggleOpen: PropTypes.func
     };
+    //example
+    static contextTypes = {
+        store: PropTypes.object.isRequired
+    }
+
     render() {
         return (
             <div>
@@ -27,13 +31,13 @@ class CommentList extends Component {
         )
     }
 
-
+/*
     componentDidMount() {
         console.log('I am mounted')
     }
 
     componentWillReceiveProps({ isOpen, article }) {
-        if (isOpen && getRelation(article, 'comments').includes(undefined) && !article.loadingComments) this.props.loadCommentsForArticle(article)
+        if (isOpen && getRelation(article, 'comments').includes(undefined) && !article.loadingComments) loadCommentsForArticle(article)
     }
 
     componentWillUpdate(nextProps) {
@@ -41,7 +45,11 @@ class CommentList extends Component {
     }
 
 
-
+*/
+    componentWillReceiveProps({ isOpen, article, loadCommentsForArticle }) {
+        if (!isOpen || article.get('loadedComments') || article.get('loadingComments')) return
+        loadCommentsForArticle(article.get('id'))
+    }
 
     getToggler() {
         const { isOpen, toggleOpen } = this.props
@@ -50,23 +58,20 @@ class CommentList extends Component {
     }
 
     getList() {
-        const { article, isOpen } = this.props
+        const { article, isOpen, comments } = this.props
         if (!isOpen) return null
-        const comments = getRelation(article, 'comments')
-        if (!comments || !comments.length) return <h3>No comments yet</h3>
-        if (comments.includes(undefined)) return <h3>Loading comments...</h3>
-        const items = comments.map(comment => <li key = {comment.id}><Comment comment = {comment} /></li>)
+        if (!article.get('loadedComments')) return <h3>Loading...</h3>
+
+        if (!comments || !comments.size) return <h3>No comments yet</h3>
+
+        const items = comments.map(comment => <li key = {comment.get('id')}><Comment comment = {comment} /></li>)
         return <div>
             <ul>{items}</ul>
-            <NewCommentForm articleId={article.id} />
+            <NewCommentForm articleId={article.get('id')} />
         </div>
     }
 }
 
-//export default toggleOpen(CommentList)
-
-export default connect(state => ({
-    //comments: toArray(state.comments.get('entities').toJS()),
-    //loading: state.articles.get('loading'),
-    //loaded: state.articles.get('loaded')
+export default connect((state, props) => ({
+    comments: getRelation(state, props.article, 'comments')
 }), { loadCommentsForArticle })(toggleOpen(CommentList))
