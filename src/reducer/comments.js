@@ -19,6 +19,7 @@ export default (comments = defaultState, action) => {
             return comments.update('entities', entities => entities.merge(fromJS(fromArray(response))))
 
         case LOAD_COMMENTS + SUCCESS:
+            //1) не нужно setIn, достаточно просто set, и вы каждый раз перезаписывает таким образом, и каждый раз читаете. Посмотрите как мы делали с комментами для статьи
              return comments.setIn(['loading'], false).setIn(['entities'], fromJS(fromArray(response.records)))
 
         case LOAD_COMMENTS + START:
