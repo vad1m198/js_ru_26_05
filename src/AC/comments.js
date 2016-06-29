@@ -1,4 +1,4 @@
-import { ADD_COMMENT, LOAD_COMMENTS_FOR_ARTICLE } from '../constants'
+import { ADD_COMMENT, LOAD_COMMENTS_FOR_ARTICLE, LOAD_COMMENTS } from '../constants'
 
 export function addComment(articleId, comment) {
     return {
@@ -17,4 +17,12 @@ export function loadCommentsForArticle(id) {
         payload: { id },
         callAPI: `/api/comment?article=${id}`
     }
+}
+
+export function loadComments(offset) {
+    return {
+        type: LOAD_COMMENTS,
+        payload: { offset },
+        callAPI: `/api/comment?limit=5&offset=${offset}`
+    }   
 }
